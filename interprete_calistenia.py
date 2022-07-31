@@ -20,7 +20,7 @@ def print_dict():
 		print(f'{key[:-1]}')
 		for value in values:
 			print(f'\t{value}')
-
+	print()
 def add_value(line):
 	'''Adds a value to the dictionary.  '''
 	if header not in dict.keys():
@@ -50,8 +50,19 @@ def procesar_modo_mes(line):
 	if is_header(line) and is_month(args.month, line):
 		contador_mes += 1
 
-def procesar_modo_dia(line):
-	pass
+def is_day(day, line):
+	return day == header_regex.search(line).group(1)
+
+def procesar_modo_day(line):
+	global day_string
+	global selected_day
+	if is_header(line):
+		if is_day(args.day, line):
+			selected_day = True
+		else:
+			selected_day = False
+	elif selected_day and line.strip():
+		day_string += ('\t') + line
 
 # main
 args = parse_arguments()
@@ -60,8 +71,11 @@ dict = dict()
 header = ''
 contador_busqueda = 0
 contador_mes = 0
+day_string = ''
+selected_day = False
+
 modo_busqueda = args.search is not None
-modo_dia = args.day is not None
+modo_day = args.day is not None
 modo_mes =  args.month is not None
 
 with open(args.file) as file:
@@ -70,11 +84,16 @@ with open(args.file) as file:
 			procesar_modo_busqueda(line)
 		if(modo_mes):
 			procesar_modo_mes(line)
-		if(modo_dia):
-			procesar_modo_dia(line)
+		if(modo_day):
+			procesar_modo_day(line)
 	if(modo_busqueda):
 		print(f'\nMostrando ejercicio \'{args.search}\', se ha entrenado {contador_busqueda} veces en {len(dict)} entrenos:')
 		print('-----------------------------------------------------------------------------')
 		print_dict()
 	if(modo_mes):
-		print(f'Se entrenó {contador_mes} de los {dias_mes()} días del mes, un {int(contador_mes / dias_mes() * 100)}%')
+		print(f'Se entrenó {contador_mes} de los {dias_mes()} días del mes, un {int(contador_mes / dias_mes() * 100)}%\n')
+	if(modo_day):
+		if len(day_string):
+			print(f'El día {args.day} se hizo:\n{day_string}\n')
+		else:
+			print(f'El día {args.day} no se entrenó\n')
