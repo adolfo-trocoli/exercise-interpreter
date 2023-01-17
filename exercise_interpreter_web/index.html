@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hello World</title>
+    <!-- Add some CSS to change client UI -->
+    <style>
+        body {
+            height: 100%;
+            background-color: #232F3E;
+            font-family: Arial, Helvetica, sans-serif;
+            color:antiquewhite;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        div {
+            border: 15px;
+        }
+
+        #gridLayout {
+            height: 80vh;
+            display: grid;
+            grid-template-areas: "input output";
+            grid-template-columns: 67% 33%;
+            column-gap: 15px;
+            margin: 100px;
+            padding: 30px;
+        }
+
+        #formulario {
+            grid-area: input;
+            display: grid;
+            grid-template-areas: "ejercicios parametros";
+            grid-template-columns: 40% 60%;
+        }
+        
+        #ejerciciosDiv {
+            grid-area: ejercicios;
+            text-align: center;
+        }   
+        
+        #parametrosDiv {
+            grid-area: parametros;
+        }
+        
+        #resultadoDiv {
+            grid-area: output;
+        }
+
+        textarea {
+            width: 80%;
+            height: 80%;
+        }
+
+        li {
+            margin-top: 2em;
+        }
+
+        input, label {
+            display: block;
+        }
+
+        #total {
+            display:inline;
+        }
+        /* button {
+            color: #FF9900;
+            font-size: 20px;
+            margin-left: 40px;
+        }
+        input {
+            color: #FF9900;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 20px;
+            margin-left: 20px;
+        } */
+    </style>
+    <script>
+        // define the callAPI function that takes a first name and last name as parameters
+        var callAPI = (ejercicios, search, mes, dia, pr, total) => {
+            // instantiate a headers object
+            var myHeaders = new Headers();
+            // add content type header to object
+            myHeaders.append("Content-Type", "application/json");
+            // using built in JSON utility package turn object to string and store in a variable
+            if (total) {
+                total = 'true'
+            }
+            var raw = JSON.stringify({ "ejercicios": ejercicios, "search": search, "mes": mes, "dia": dia, "pr": pr, "total": total });
+            // create a JSON object with parameters for API call and store in a variable
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+            // make API call with parameters and use promises to get response
+            // cambiando esto con document.getElementById("name").innerHTML = name; soluciono la respuesta
+            fetch("https://gng4zu6h8i.execute-api.eu-west-3.amazonaws.com/dev", requestOptions)
+                .then(response => response.text())
+                .then(result => showResult(JSON.parse(result).body))
+                .catch(error => showError(error));
+        }
+
+        //TODO
+        function showResult(result) {
+            document.getElementById("resultadoDiv").innerHTML = result;
+            console.log(result);
+        }
+
+        function showError(error) {
+            alert(error);
+        }
+    </script>
+</head>
+
+<body>
+    <div id="gridLayout">
+        <form id="formulario">
+            <div id="ejerciciosDiv">
+                <label for="ejercicios" style="display:block">Ejercicios:</label>
+                <textarea id="ejercicios"></textarea>
+            </div>
+            <div id="parametrosDiv">
+                <ul>
+                    <li>
+                        <label for="search">Search (Ejercicio a buscar) [-s]:</label>
+                        <input type="text" id="search" />
+                    </li>
+                    <li>
+                        <label for="total" style="display:inline">Total reps (requiere -s) [-t]:</label>
+                        <input type="checkbox" id="total" />
+                    </li>
+                    <li>
+                        <label>Mes (Formato m/y o m) [-m]:
+                            <input type="text" id="mes" />
+                        </label>
+                    </li>
+                    <li>
+                        <label for="dia">Día (Formato d/m/y) [-d]:</label>
+                        <input type="text" id="dia" />
+                    </li>
+                    <li>
+                        <label for="pr">Ejercicio PR (ejercicio del que se desea conocer el pr) [--pr]:</label>
+                        <input type="text" id="pr" />
+                    </li>
+                    <li>
+                        <button type="button" onclick="callAPI(
+                                document.getElementById('ejercicios').value, 
+                                document.getElementById('search').value,
+                                document.getElementById('mes').value, 
+                                document.getElementById('dia').value, 
+                                document.getElementById('pr').value,
+                                document.getElementById('total').checked)">
+                            Buscar</button>
+                    </li>
+                </ul>
+            </div>
+        </form>
+        <div id="resultadoDiv">
+            <p>No me digas que está feo que me lo he escrito en html</p>
+        </div>
+    </div>
+</body>
+
+</html>
