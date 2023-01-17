@@ -1,4 +1,4 @@
-# Business management
+# exercise interpreter
 > Small python script designed to quickly search through my exercise log file.
 
 ## Table of Contents
