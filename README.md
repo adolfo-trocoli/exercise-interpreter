@@ -1,4 +1,4 @@
-# Business management
+# exercise interpreter
 > Small python script designed to quickly search through my exercise log file.
 
 ## Table of Contents
@@ -30,7 +30,7 @@ The script needs to be called with an input file as an argument. It will then re
 	-t, --total: shows total reps of a given exercise, requires -s to know what exercise to show
 
 ## Web deployment
-This same script is also deployed in a [web-server](#https://dev6981.d2qnjwwk6ymm5j.amplifyapp.com/). This was done to try some of the AWS services and get some experience on how to configure them. I will indicate the steps followed to deploy it at a high level. The files used to do this are under ./exercise_interpreter_web directory.
+This same script is also deployed in a [web-server](https://dev6981.d2qnjwwk6ymm5j.amplifyapp.com/). This was done to try some of the AWS services and get some experience on how to configure them. I will indicate the steps followed to deploy it at a high level. The files used to do this are under ./exercise_interpreter_web directory.
 - First, I have modified slightly the script to be able to work as AWS Lambda, accepting the parameters as an event/context pair as needed for this kind of function.
 - Then I created an API Gateway so it can accept POST method from web server and associated it with the lambda function.
 - Lastly, I have set up a little script inside the html file so it detects the checked settings and sends the request to the API. This html file has been uploaded and deployed using AWS Amplify.
